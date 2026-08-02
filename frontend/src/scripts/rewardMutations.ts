@@ -11,9 +11,7 @@ export const claimRewardMutation = (
   const reward = state.rewards[rewardId];
   if (!reward) return state;
 
-  // Guard clause: check if user has enough coins
-  if (state.currentCoins < reward.coinCost) return state;
-
+  // We are okay with negative balance. Continue with subtracting coins and incrementing timesUsed.
   return {
     ...state,
     currentCoins: state.currentCoins - reward.coinCost,
