@@ -57,9 +57,9 @@ export const MainPage: React.FC = () => {
           <span className="text-xs font-semibold text-slate-400">
             YOUR BALANCE
           </span>
-          <span className="text-sm font-extrabold text-amber-400">
-            🪙 {state.currentCoins} Coins
-          </span>
+          <span className={`text-sm font-extrabold ${state.currentCoins >= 0 ? "text-amber-400" : "text-rose-500"}`}>
+          🪙 {state.currentCoins} Coins
+        </span>
         </div>
 
         {/* Projects Navigation Section */}
