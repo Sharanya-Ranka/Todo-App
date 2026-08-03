@@ -4,6 +4,7 @@ export interface Task {
   id: string;
   parentId: string | null; // null indicates this Task IS a top-level Project!
   description: string;
+  notes?: string;
   isCompleted: boolean;
   subTaskIds: string[]; // Child tasks
   baseCoinValue: number; // Only used if subTaskIds.length === 0 (leaf task)
