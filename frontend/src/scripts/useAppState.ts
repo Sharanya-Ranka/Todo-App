@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { loadAppState, saveAppState } from './utils';
-import type { AppState, PageType, Reward, Task, ThemeMode } from '../types';
+import type { AppState, PageType, Reward, Task, TaskType, ThemeMode } from '../types';
 
 import {
   addTaskMutation,
   deleteTaskMutation,
   createProjectMutation,
   updateTaskMutation,
-  toggleCompleteMutation,
 } from './taskMutations';
 
 import { addRewardMutation, updateRewardMutation, deleteRewardMutation, claimRewardMutation } from './rewardMutations';
@@ -40,8 +39,8 @@ export const useAppState = () => {
       // --- Handlers ---
     
       // Create subtask under parentId
-      const handleAddTask = (parentId: string, description: string, coinValue: number) => {
-        setState((prev) => addTaskMutation(prev, parentId, description, coinValue));
+      const handleAddTask = (parentId: string, description: string, coinValue: number, taskType:TaskType) => {
+        setState((prev) => addTaskMutation(prev, parentId, description, coinValue, taskType));
       };
     
       // Create a brand new top-level Project
@@ -56,10 +55,10 @@ export const useAppState = () => {
         setState((prev) => updateTaskMutation(prev, taskId, updates));
       };
     
-      // Toggle completion & auto-award coins for leaf tasks
-      const handleToggleComplete = (taskId: string, isCompleted: boolean) => {
-        setState((prev) => toggleCompleteMutation(prev, taskId, isCompleted));
-      };
+      // // Toggle completion & auto-award coins for leaf tasks
+      // const handleToggleComplete = (taskId: string, isCompleted: boolean) => {
+      //   setState((prev) => toggleCompleteMutation(prev, taskId, isCompleted));
+      // };
 
       const handleToggleExpand = (taskId: string) => {
         const isExpanded = state.displayState.expandedTasks.includes(taskId);
@@ -139,7 +138,7 @@ export const useAppState = () => {
         handleUpdateTask,
         handleDeleteTask,
 
-        handleToggleComplete,
+        // handleToggleComplete,
         handleToggleExpand,
         handleAddReward,
         handleUpdateReward,

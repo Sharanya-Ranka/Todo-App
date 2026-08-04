@@ -100,7 +100,8 @@ export const SEED_TASKS: Record<string, Task> = {
     id: 'proj-1',
     parentId: null,
     description: 'Project1',
-    isCompleted: false,
+    countCompleted: 0,
+    taskType: "ONCE",
     subTaskIds: [],
     baseCoinValue: 0,
   }
@@ -111,6 +112,7 @@ export const SEED_REWARDS: RewardMap = {
 };
 
 export const INITIAL_APP_STATE : AppState = {
+    schema: 2,
     tasks: SEED_TASKS,
     rewards: SEED_REWARDS,
     projectIds: ['proj-1'],

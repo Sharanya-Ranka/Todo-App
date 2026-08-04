@@ -13,7 +13,7 @@ export const MainPage: React.FC = () => {
     handleCreateProject,
     handleUpdateTask,
     handleDeleteTask,
-    handleToggleComplete,
+    // handleToggleComplete,
     handleClaimReward,
     handleAddReward,
     handleUpdateReward,
@@ -146,7 +146,7 @@ export const MainPage: React.FC = () => {
           onAddTask={handleAddTask}
           onUpdateTask={handleUpdateTask}
           onDeleteTask={handleDeleteTask}
-          onToggleComplete={handleToggleComplete}
+          // onToggleComplete={handleToggleComplete}
           onToggleExpand={handleToggleExpand}
         />
       ) : (

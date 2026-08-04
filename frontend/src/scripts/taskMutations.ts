@@ -1,17 +1,19 @@
-import type { AppState, Task } from '../types';
+import type { AppState, Task, TaskType } from '../types';
 
 export const addTaskMutation = (
   state: AppState,
   parentId: string,
   description: string,
-  coinValue: number
+  coinValue: number,
+  taskType: TaskType
 ): AppState => {
   const newTaskId = `task-${Date.now()}`;
   const newTask: Task = {
     id: newTaskId,
     parentId,
     description,
-    isCompleted: false,
+    countCompleted: 0,
+    taskType: taskType,
     subTaskIds: [],
     baseCoinValue: coinValue,
   };
@@ -92,7 +94,8 @@ export const createProjectMutation = (
     id: newProjId,
     parentId: null,
     description: title.trim(),
-    isCompleted: false,
+    taskType: "ONCE",
+    countCompleted: 0,
     subTaskIds: [],
     baseCoinValue: 0,
   };
@@ -121,12 +124,25 @@ export const updateTaskMutation = (
 
   let coinDelta = 0;
 
-  if (targetTask.subTaskIds.length === 0 && "baseCoinValue" in updates) {
-      const newBaseCoinValue = updates.baseCoinValue || 0;
-      coinDelta = targetTask.isCompleted
-      ? newBaseCoinValue - targetTask.baseCoinValue
-      : 0; // Allow negative balances
-    }
+  // The two attributes baseCoinValue and countCompleted are expected to never be in an update together.
+  // Assert the same
+  if ("baseCoinValue" in updates && "countCompleted" in updates) {
+    throw new Error("baseCoinValue and countCompleted cannot be updated together");
+  }
+
+  // We make a design decision to NOT update currentCoins if a user updates the baseCoinValue and thus comment the below
+  // Updating currentCoins when baseCoinValue changes can confuse the user. 
+  // We are aware that this permits the user to gain an infinite amount of coins by repeatedly changing baseCoinValue and countCompleteed but we are okay with that for now.  
+  // if (targetTask.subTaskIds.length === 0 && "baseCoinValue" in updates) {
+  //   const coinValueDelta = updates!.baseCoinValue! - targetTask.baseCoinValue;
+  //   coinDelta += coinValueDelta * targetTask.countCompleted; // Adjust coins based on how many times the task has been completed
+
+  // }
+
+  if (targetTask.subTaskIds.length === 0 && "countCompleted" in updates) {
+    const countCompltedDelta = updates!.countCompleted! - targetTask.countCompleted;
+    coinDelta += countCompltedDelta * targetTask.baseCoinValue; // Adjust coins based on how many times the task has been completed
+  }
     
 
   return {
@@ -146,33 +162,33 @@ export const updateTaskMutation = (
  * Toggles a task's completion status.
  * If the task is a leaf node (has 0 subtasks), auto-adjusts the user's current coin balance.
  */
-export const toggleCompleteMutation = (
-  state: AppState,
-  taskId: string,
-  isCompleted: boolean
-): AppState => {
-  const task = state.tasks[taskId];
-  if (!task) return state;
+// export const toggleCompleteMutation = (
+//   state: AppState,
+//   taskId: string,
+//   isCompleted: boolean
+// ): AppState => {
+//   const task = state.tasks[taskId];
+//   if (!task) return state;
 
-  let newCoins = state.currentCoins;
+//   let newCoins = state.currentCoins;
 
-  // Award or deduct coins ONLY if it's a leaf task (subTaskIds.length === 0)
-  if (task.subTaskIds.length === 0) {
-    const coinDelta = task.baseCoinValue || 0;
-    newCoins = isCompleted
-      ? state.currentCoins + coinDelta
-      : state.currentCoins - coinDelta; // Allow negative balances
-  }
+//   // Award or deduct coins ONLY if it's a leaf task (subTaskIds.length === 0)
+//   if (task.subTaskIds.length === 0) {
+//     const coinDelta = task.baseCoinValue || 0;
+//     newCoins = isCompleted
+//       ? state.currentCoins + coinDelta
+//       : state.currentCoins - coinDelta; // Allow negative balances
+//   }
 
-  return {
-    ...state,
-    currentCoins: newCoins,
-    tasks: {
-      ...state.tasks,
-      [taskId]: {
-        ...task,
-        isCompleted,
-      },
-    },
-  };
-};
+//   return {
+//     ...state,
+//     currentCoins: newCoins,
+//     tasks: {
+//       ...state.tasks,
+//       [taskId]: {
+//         ...task,
+//         isCompleted,
+//       },
+//     },
+//   };
+// };
