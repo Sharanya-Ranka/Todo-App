@@ -188,47 +188,14 @@ export const MainTaskCard: React.FC<MainTaskCardProps> = ({
   isExpanded,
   onToggleExpand,
 }) => {
-  const taskType = task.taskType ?? 'ONCE';
+  // const taskType = task.taskType ?? 'ONCE';
   const taskId = task.id;
 
   return (
     <div className="group flex flex-col rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
       <div className="flex items-start justify-between p-3">
         <div className="flex items-start gap-3 flex-1 min-w-0">
-          {/* Completion Control: Checkbox for ONCE vs Counter for RECURRING */}
-          {taskType === 'ONCE' ? (
-            <input
-              type="checkbox"
-              checked={task.countCompleted > 0}
-              onChange={(e) =>
-                handleUpdateTaskCompletion(taskId, e.target.checked ? 1 : -1)
-              }
-              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer dark:border-slate-600 dark:bg-slate-700 dark:checked:bg-indigo-500"
-            />
-          ) : (
-            <div className="flex flex-col items-center justify-center bg-slate-100 rounded p-0.5 dark:bg-slate-700/60 shrink-0 select-none">
-              <button
-                type="button"
-                onClick={() => handleUpdateTaskCompletion(taskId, 1)}
-                className="p-0.5 text-[10px] font-bold text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400"
-                title="Increase completion count"
-              >
-                ︿
-              </button>
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 px-1">
-                {task.countCompleted || 0}
-              </span>
-              <button
-                type="button"
-                onClick={() => handleUpdateTaskCompletion(taskId, -1)}
-                disabled={(task.countCompleted || 0) <= 0}
-                className="p-0.5 text-[10px] font-bold text-slate-600 hover:text-indigo-600 disabled:opacity-30 dark:text-slate-300 dark:hover:text-indigo-400"
-                title="Decrease completion count"
-              >
-                ﹀
-              </button>
-            </div>
-          )}
+          
 
           {/* Task Description & Notes */}
           {isEditing ? (
@@ -253,6 +220,7 @@ export const MainTaskCard: React.FC<MainTaskCardProps> = ({
               setIsNotesExpanded={setIsNotesExpanded}
               onDeleteTask={onDeleteTask}
               handleSubtaskClick={handleSubtaskClick}
+              handleUpdateTaskCompletion={handleUpdateTaskCompletion}
               isLeaf={isLeaf}
               totalCoins={totalCoins}
               setEditDescription={setEditDescription}
@@ -411,6 +379,7 @@ interface ViewingMainTaskCardProps {
   setIsNotesExpanded: (val: boolean) => void;
   onDeleteTask: (taskId: string) => void;
   handleSubtaskClick: () => void;
+  handleUpdateTaskCompletion: (taskId: string, delta: number) => void;
   isLeaf: boolean;
   totalCoins: number;
   setEditDescription: (val: string) => void;
@@ -426,6 +395,7 @@ const ViewingMainTaskCard: React.FC<ViewingMainTaskCardProps> = ({
   setIsNotesExpanded,
   onDeleteTask,
   handleSubtaskClick,
+  handleUpdateTaskCompletion,
   isLeaf,
   totalCoins,
   setEditDescription,
@@ -437,16 +407,51 @@ const ViewingMainTaskCard: React.FC<ViewingMainTaskCardProps> = ({
   const taskId = task.id;
   const taskType = task.taskType ?? 'ONCE';
   return (
+    <>
+    {/* Completion Control: Checkbox for ONCE vs Counter for RECURRING */}
+          {taskType === 'ONCE' ? (
+            <input
+              type="checkbox"
+              checked={task.countCompleted > 0}
+              onChange={(e) =>
+                handleUpdateTaskCompletion(taskId, e.target.checked ? 1 : -1)
+              }
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer dark:border-slate-600 dark:bg-slate-700 dark:checked:bg-indigo-500"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center bg-slate-100 rounded p-0.5 dark:bg-slate-700/60 shrink-0 select-none">
+              <button
+                type="button"
+                onClick={() => handleUpdateTaskCompletion(taskId, 1)}
+                className="p-0.5 text-[10px] font-bold text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400"
+                title="Increase completion count"
+              >
+                ︿
+              </button>
+              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 px-1">
+                {task.countCompleted || 0}
+              </span>
+              <button
+                type="button"
+                onClick={() => handleUpdateTaskCompletion(taskId, -1)}
+                disabled={(task.countCompleted || 0) <= 0}
+                className="p-0.5 text-[10px] font-bold text-slate-600 hover:text-indigo-600 disabled:opacity-30 dark:text-slate-300 dark:hover:text-indigo-400"
+                title="Decrease completion count"
+              >
+                ﹀
+              </button>
+            </div>
+          )}
     <div className="flex items-start gap-3 flex-1 min-w-0">
       <div className="flex flex-col flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span
             className={`text-sm font-medium wrap-break-words ${
               taskType === 'ONCE' && task.countCompleted > 0
-                ? 'line-through text-slate-400 dark:text-slate-500'
+              ? 'line-through text-slate-400 dark:text-slate-500'
                 : 'text-slate-700 dark:text-slate-200'
-            }`}
-          >
+              }`}
+              >
             {task.description}
           </span>
 
@@ -461,14 +466,14 @@ const ViewingMainTaskCard: React.FC<ViewingMainTaskCardProps> = ({
         {/* Task Notes View */}
         {task.notes && task.notes.trim() !== '' && (
           <div
-            onClick={() => setIsNotesExpanded(!isNotesExpanded)}
-            className="mt-1 cursor-pointer rounded bg-slate-50/80 p-2 text-xs text-slate-600 transition hover:bg-slate-100 dark:bg-slate-900/50 dark:text-slate-400 dark:hover:bg-slate-900"
+          onClick={() => setIsNotesExpanded(!isNotesExpanded)}
+          className="mt-1 cursor-pointer rounded bg-slate-50/80 p-2 text-xs text-slate-600 transition hover:bg-slate-100 dark:bg-slate-900/50 dark:text-slate-400 dark:hover:bg-slate-900"
           >
             <p
               className={`whitespace-pre-wrap wrap-break-words ${
                 !isNotesExpanded ? 'line-clamp-1' : ''
               }`}
-            >
+              >
               {task.notes}
             </p>
             <span className="mt-1 inline-block text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
@@ -483,8 +488,8 @@ const ViewingMainTaskCard: React.FC<ViewingMainTaskCardProps> = ({
             isLeaf
               ? 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/60'
               : 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800/60'
-          }`}
-          title={isLeaf ? 'Leaf Task Value' : 'Calculated Sum of Subtasks'}
+            }`}
+            title={isLeaf ? 'Leaf Task Value' : 'Calculated Sum of Subtasks'}
         >
           🪙 {totalCoins}
         </span>
@@ -499,7 +504,7 @@ const ViewingMainTaskCard: React.FC<ViewingMainTaskCardProps> = ({
           }}
           className="p-1 text-slate-400 hover:text-slate-600 rounded hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-700"
           title="Edit Task"
-        >
+          >
           ✏️
         </button>
 
@@ -507,7 +512,7 @@ const ViewingMainTaskCard: React.FC<ViewingMainTaskCardProps> = ({
           onClick={handleSubtaskClick}
           className="px-2 py-0.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded border border-indigo-200 dark:text-indigo-300 dark:border-indigo-800 dark:hover:bg-indigo-950/50"
           title="Add Subtask"
-        >
+          >
           + Subtask
         </button>
 
@@ -515,10 +520,11 @@ const ViewingMainTaskCard: React.FC<ViewingMainTaskCardProps> = ({
           onClick={() => onDeleteTask(taskId)}
           className="p-1 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 dark:text-slate-400 dark:hover:text-red-400 dark:hover:bg-red-950/40"
           title="Delete Task"
-        >
+          >
           ✕
         </button>
       </div>
     </div>
+    </>
   );
 };
