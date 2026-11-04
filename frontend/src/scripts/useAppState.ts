@@ -86,7 +86,7 @@ export const useAppState = () => {
     //   }
       setState((prev) => claimRewardMutation(prev, rewardId))
     
-      alert('🎁 Reward claimed successfully!');
+      // alert('🎁 Reward claimed successfully!');
     };
     
     const handleAddReward = (description: string, coinCost: number) => {

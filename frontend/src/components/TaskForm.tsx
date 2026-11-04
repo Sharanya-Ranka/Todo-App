@@ -2,22 +2,22 @@ import React, { useState } from 'react';
 import type {  TaskType } from '../types';
 // import { calculateTaskCoins } from '../scripts/utils';
 // import { TaskItem } from './TaskItem';
+import {useAppStore} from '../store/useAppStore';
 
 
-interface SubTaskProps {
+interface TaskFormProps {
     parentTaskId: string;
     onAddTask: (parentId: string, description: string, coinValue: number, taskType: TaskType) => void;
     setIsAddingSubtask: (isAdding: boolean) => void;
 }
 
 
-export const SubTask: React.FC<SubTaskProps> = ({
+export const TaskForm: React.FC<TaskFormProps> = ({
     parentTaskId,
-    onAddTask,
     setIsAddingSubtask,
 }) => {
-    
-  
+    const onAddTask = useAppStore((state) => state.onAddSubtask);
+
   const [newSubtaskDesc, setNewSubtaskDesc] = useState('');
   const [newSubtaskCoins, setNewSubtaskCoins] = useState(10);
   const [newSubtaskType, setNewSubtaskType] = useState<TaskType>("ONCE");
