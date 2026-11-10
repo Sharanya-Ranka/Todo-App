@@ -6,6 +6,7 @@ import { createTaskSlice } from "./slices/taskSlice";
 import { createRewardSlice } from "./slices/rewardSlice";
 import { createDisplaySlice } from "./slices/displaySlice";
 import { createAppSlice } from "./slices/appSlice.ts";
+import { createTodaySlice } from "./slices/todaySlice.ts";
 
 export const useAppStore = create<RootStore>()(
   persist(
@@ -14,6 +15,7 @@ export const useAppStore = create<RootStore>()(
       ...createRewardSlice(...args),
       ...createDisplaySlice(...args),
       ...createAppSlice(...args),
+      ...createTodaySlice(...args)
     }),
     {
       name: "coindo-app-root-state",
@@ -25,9 +27,10 @@ export const useAppStore = create<RootStore>()(
         rewardsMap: state.rewardsMap,
         currentCoins: state.currentCoins,
         displayState: state.displayState,
+        todaySchedule: state.todaySchedule,
       }),
       onRehydrateStorage: () => (state) => {
-        console.log("Rehydrated state is", state);
+        // console.log("Rehydrated state is", state);
         if (state) {
           state.setHydrated(true);
 

@@ -1,0 +1,23 @@
+// // 1. Open the target database
+// const request = window.indexedDB.open('CoindoDB', 1);
+
+// request.onsuccess = async (event) => {
+//   const db = event.target.result;
+//   const storeName = "keyval";
+//   window.tempDBData = {};
+  
+
+//     const tx = db.transaction(storeName, 'readonly');
+//     const store = tx.objectStore(storeName);
+//     window.tempDBData["state"] = await new Promise((resolve, reject) => {
+//         const req = store.get("coindo-app-root-state");
+//         req.onsuccess = () => resolve(req.result);
+//         req.onerror = () => reject(req.error);
+//     });
+
+// //   const jsonString = JSON.stringify(JSON.parse(stateData).state);
+// //   copy(jsonString);
+//   console.log('IndexedDB data copied to clipboard!');
+// };
+
+// copy(window.tempDBData['state'])
