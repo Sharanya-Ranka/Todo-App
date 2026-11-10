@@ -1,6 +1,7 @@
 import type { ActivePageType, DisplayState } from "./display";
 import type { RewardMap, RewardUpdates } from "./reward";
 import type { TaskMapV3, TaskType, TaskV3 } from "./task";
+import type { TodaySchedule } from "./todaytodo";
 
 export type LocalTaskKey = "description" | "notes" | "taskType";
 
@@ -72,6 +73,16 @@ export interface DisplaySlice {
   handleChangeActivePage: (pageType: ActivePageType, pageId: string | null) => void;
 }
 
+export interface TodaySlice {
+  todaySchedule: TodaySchedule;
+  checkAndResetDaySchedule: () => void;
+  addScheduleBlock: (timeBegin: string, timeEnd: string, taskIds: string[]) => void;
+  updateScheduleBlock: (blockId: string, timeBegin: string, timeEnd: string, taskIds: string[]) => void;
+  deleteScheduleBlock: (blockId: string) => void;
+  addTaskToBlock: (blockId: string, taskId: string) => void;
+  removeTaskFromBlock: (blockId: string, taskId: string) => void;
+}
+
 export interface AppSlice {
   schema: number;
   isHydrated: boolean;
@@ -79,4 +90,4 @@ export interface AppSlice {
   resetAllData: () => void;
 }
 
-export type RootStore = TaskSlice & RewardSlice & DisplaySlice & AppSlice;
+export type RootStore = TaskSlice & RewardSlice & DisplaySlice & TodaySlice & AppSlice;
