@@ -15,6 +15,7 @@ export interface TaskSlice {
   onAddSubtask: (
     parentId: string,
     description: string,
+    notes: string,
     coinValue: number,
     taskType: TaskType
   ) => void;

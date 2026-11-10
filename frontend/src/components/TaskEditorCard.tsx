@@ -33,6 +33,7 @@ export const TaskEditorCard: React.FC<TaskEditorCardProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedDesc = description.trim();
+    const trimedNotes = notes.trim();
     if (!trimmedDesc) return;
 
     if (isEdit && task) {
@@ -50,7 +51,7 @@ export const TaskEditorCard: React.FC<TaskEditorCardProps> = ({
       }
     } else {
       // Adding a subtask under `taskId` (as parentId)
-      onAddSubtask(taskId, trimmedDesc, coins, taskType);
+      onAddSubtask(taskId, trimmedDesc, trimedNotes, coins, taskType);
     }
 
     onClose();

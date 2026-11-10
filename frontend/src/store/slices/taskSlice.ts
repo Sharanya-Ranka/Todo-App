@@ -8,7 +8,7 @@ export const createTaskSlice: StateCreator<RootStore, [], [], TaskSlice> = (
 ) => ({
   taskMap: {},
 
-  onAddSubtask: (parentId, description, coinValue, taskType) => {
+  onAddSubtask: (parentId, description, notes, coinValue, taskType) => {
     set((state) => {
       const parentTask = state.taskMap[parentId];
       if (!parentTask) {
@@ -21,6 +21,7 @@ export const createTaskSlice: StateCreator<RootStore, [], [], TaskSlice> = (
         id: newId,
         parentId,
         description,
+        notes,
         taskType,
         coinValue,
         countCompleted: 0,
